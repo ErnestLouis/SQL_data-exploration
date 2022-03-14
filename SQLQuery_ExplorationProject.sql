@@ -61,3 +61,11 @@ FROM Covid19Project..Covid_deaths
 WHERE continent  IS NOT NULL
 GROUP BY continent
 ORDER BY  highest_death_count desc
+
+--DISPLAYS WORLDWIDE STATS
+SELECT SUM(new_cases) AS total_cases, SUM(cast(new_deaths AS INT)) AS total_deaths, SUM(cast(new_deaths AS INT))/SUM(new_cases)*100 AS death_percentage
+FROM Covid19Project..Covid_Deaths
+WHERE continent is not null 
+ORDER BY 1,2
+
+
