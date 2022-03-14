@@ -36,3 +36,11 @@ SELECT Location, population,MAX(total_cases) AS highest_case_count,MAX(ROUND((to
 FROM Covid19Project..Covid_deaths
 Group BY Location, Population
 ORDER BY case_percentage desc
+
+
+--DISPLAY COUNTRIES W/HIGHEST DEATH COUNT PER POPULATION
+SELECT Location, MAX(CAST(total_deaths as bigint)) AS highest_death_count
+FROM Covid19Project..Covid_deaths
+WHERE continent IS NOT NULL
+Group BY Location, Population
+ORDER BY highest_death_count desc
