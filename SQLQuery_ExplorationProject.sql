@@ -31,4 +31,8 @@ FROM Covid19Project..Covid_deaths
 WHERE location like '%states%'
 ORDER BY 1,2 
 
-
+--SELECT COUNTRIES WITH HIGHEST INFECTION RATE COMPARED TO POPULATION
+SELECT Location, population,MAX(total_cases) AS highest_case_count,MAX(ROUND((total_cases/population)*100,3)) as case_percentage--to get percentage rounded 3 decimal places
+FROM Covid19Project..Covid_deaths
+Group BY Location, Population
+ORDER BY case_percentage desc
