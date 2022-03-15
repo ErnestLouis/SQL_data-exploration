@@ -58,14 +58,24 @@ ORDER BY highest_death_count desc
 --DISPLAY CONTINENT W/HIGHEST DEATH COUNT PER POPULATION
 SELECT continent, MAX(CAST(total_deaths as bigint)) AS highest_death_count
 FROM Covid19Project..Covid_deaths
-WHERE continent  IS NOT NULL
+WHERE continent IS NOT NULL
 GROUP BY continent
 ORDER BY  highest_death_count desc
 
 --DISPLAYS WORLDWIDE STATS
 SELECT SUM(new_cases) AS total_cases, SUM(cast(new_deaths AS INT)) AS total_deaths, SUM(cast(new_deaths AS INT))/SUM(new_cases)*100 AS death_percentage
 FROM Covid19Project..Covid_Deaths
-WHERE continent is not null 
+WHERE continent IS NOT NULL
 ORDER BY 1,2
 
+-- DISPLAYS TOTAL POPULATION vs VACCINATION
+-- Shows Percentage of Population that has recieved at least one Covid Vaccine
 
+SELECT death.continent, death.location, death.date, death.population, vac.new_vaccinations
+, SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) as number_people_vaccinated
+FROM Covid19Project..Covid_deaths death
+JOIN Covid19Project..Covid_vaccinations vac
+	On death.location = vac.location
+	AND death.date = vac.date
+WHERE death.continent IS NOT NULL
+ORDER BY  2,3
