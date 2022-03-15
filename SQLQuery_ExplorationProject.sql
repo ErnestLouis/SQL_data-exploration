@@ -75,7 +75,7 @@ SELECT death.continent, death.location, death.date, death.population, vac.new_va
 , SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) as number_people_vaccinated
 FROM Covid19Project..Covid_deaths death
 JOIN Covid19Project..Covid_vaccinations vac
-	On death.location = vac.location
+	ON death.location = vac.location
 	AND death.date = vac.date
 WHERE death.continent IS NOT NULL
 ORDER BY  2,3
@@ -90,7 +90,7 @@ SELECT death.continent, death.location, death.date, death.population, vac.new_va
 , SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) AS number_people_vaccinated
 FROM Covid19Project..Covid_deaths death
 JOIN Covid19Project..Covid_vaccinations vac
-	On death.location = vac.location
+	ON death.location = vac.location
 	AND death.date = vac.date
 WHERE death.continent IS NOT NULL
 )
@@ -117,9 +117,22 @@ SELECT death.continent, death.location, death.date, death.population, vac.new_va
 , SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) AS number_people_vaccinated
 FROM Covid19Project..Covid_deaths death
 JOIN Covid19Project..Covid_vaccinations vac
-	On death.location = vac.location
+	ON death.location = vac.location
 	AND death.date = vac.date
 
 SELECT *, ROUND((number_people_vaccinated/population)*100,3) AS percentage_people_vaccinated
 From #percentage_people_vaccinated
+
+-- CREATING VIEW TO STORE DATA
+--important for visualization
+
+CREATE VIEW percentage_people_vaccinated AS
+SELECT death.continent, death.location, death.date, death.population, vac.new_vaccinations
+, SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) AS number_people_vaccinated
+FROM Covid19Project..Covid_deaths death
+JOIN Covid19Project..Covid_vaccinations vac
+	ON death.location = vac.location
+	AND death.date = vac.date
+WHERE death.continent IS NOT NULL
+
 
