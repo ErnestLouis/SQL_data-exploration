@@ -79,3 +79,20 @@ JOIN Covid19Project..Covid_vaccinations vac
 	AND death.date = vac.date
 WHERE death.continent IS NOT NULL
 ORDER BY  2,3
+
+--USING CTE
+--to perform Calculation on PARTITION BY in previous query
+
+WITH pop_vsvac (continent, location, date, population, new_vaccinations, number_people_vaccinated)
+AS
+(
+SELECT death.continent, death.location, death.date, death.population, vac.new_vaccinations
+, SUM(CONVERT(bigint,vac.new_vaccinations)) OVER (PARTITION BY death.Location ORDER BY death.location, death.date ROWS UNBOUNDED PRECEDING) as number_people_vaccinated
+FROM Covid19Project..Covid_deaths death
+JOIN Covid19Project..Covid_vaccinations vac
+	On death.location = vac.location
+	AND death.date = vac.date
+WHERE death.continent IS NOT NULL
+)
+SELECT *, ROUND((number_people_vaccinated/population)*100,3) as percentage_people_vaccinated
+FROM pop_vsvac
